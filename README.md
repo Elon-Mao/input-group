@@ -11,7 +11,7 @@ const [inputs, updateInputs] = useImmer([
     value: "1",
   },
 ]);
-const { propsMap } = useInputGroup(inputs, updateInputs, true);
+const { propsMap } = useInputGroup(inputs, updateInputs);
 return (
   <>
     {inputs.map(({ inputKey }) => {
