@@ -11,15 +11,7 @@ const focusInputEnd = (input) => {
   input.setSelectionRange(input.value.length, input.value.length);
 };
 
-/**
- * at least one input
- *
- * @param {*} inputs
- * @param {*} updateInputs
- * @param {*} isBaseEnd
- * @returns
- */
-export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
+export const useInputGroupProps = (inputs, updateInputs, isBaseEnd) => {
   const inputsRef = useRef(inputs);
   inputsRef.current = inputs;
   const isBaseEndRef = useRef(isBaseEnd);
@@ -28,7 +20,7 @@ export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
 
   const addInput = useCallback(
     (inputKey) => {
-      if (!focusKey.current) {
+      if (focusKey.current === null) {
         return;
       }
       const focusInput = inputMap.current[focusKey.current];
@@ -86,7 +78,7 @@ export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
         setTimeout(() => {
           remainInput.focus();
           remainInput.setSelectionRange(selectionLength, selectionLength);
-        })
+        });
       });
     },
     [updateInputs]
@@ -160,7 +152,7 @@ export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
             }
             case "Backspace": {
               if (!e.target.selectionStart && !e.target.selectionEnd) {
-                e.preventDefault()
+                e.preventDefault();
                 handleBackspace(inputKey);
               }
               return;
@@ -202,5 +194,39 @@ export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
     keyDownGetter,
     focusGetter,
     blurGetter,
+  };
+};
+
+/**
+ * control inputs group like a combined input
+ * at least one input
+ */
+export default function useInputGroup(inputs, updateInputs, isBaseEnd) {
+  const {
+    inputMap,
+    addInput,
+    handleBackspace,
+    refGetter,
+    changeGetter,
+    keyDownGetter,
+    focusGetter,
+    blurGetter,
+  } = useInputGroupProps(inputs, updateInputs, isBaseEnd);
+
+  return {
+    propsMap: inputs.reduce((propsMap, { inputKey, value }) => {
+      propsMap[inputKey] = {
+        ref: refGetter(inputKey),
+        value,
+        onChange: changeGetter(inputKey),
+        onKeyDown: keyDownGetter(inputKey),
+        onFocus: focusGetter(inputKey),
+        onBlur: blurGetter(inputKey),
+      };
+      return propsMap;
+    }, {}),
+    inputMap,
+    addInput,
+    handleBackspace,
   };
 }

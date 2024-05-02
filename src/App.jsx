@@ -1,9 +1,9 @@
+import { Fragment } from "react";
 import { useImmer } from "use-immer";
 import useInputGroup from "./useInputGroup";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { Fragment } from "react";
 
 let inputKey = 1;
 
@@ -14,14 +14,7 @@ function App() {
       value: "This is a input group",
     },
   ]);
-  const {
-    addInput,
-    refGetter,
-    changeGetter,
-    keyDownGetter,
-    focusGetter,
-    blurGetter,
-  } = useInputGroup(inputs, updateInputs);
+  const { propsMap, addInput } = useInputGroup(inputs, updateInputs);
 
   return (
     <>
@@ -37,18 +30,12 @@ function App() {
       <div>
         <div className="input-group">
           {inputs.map(({ inputKey, value }) => {
-            console.log(inputKey);
             return (
               <Fragment key={inputKey}>
                 <span>{inputKey}</span>
                 <input
                   style={{ width: value.length * 8 + "px" }}
-                  ref={refGetter(inputKey)}
-                  value={value}
-                  onChange={changeGetter(inputKey)}
-                  onKeyDown={keyDownGetter(inputKey)}
-                  onFocus={focusGetter(inputKey)}
-                  onBlur={blurGetter(inputKey)}
+                  {...propsMap[inputKey]}
                 ></input>
               </Fragment>
             );
@@ -64,7 +51,7 @@ function App() {
       <p className="read-the-docs">
         {`use "ArrowLeft" and "ArrowRight" to control cursor through inputs`}
       </p>
-      <p className="read-the-docs">{`use "Backspace" to delete input`}</p>
+      <p className="read-the-docs">{`use "Backspace" to delete span`}</p>
     </>
   );
 }
