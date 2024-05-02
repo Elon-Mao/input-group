@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { useImmer } from "use-immer";
 import useInputGroup from "./useInputGroup";
+import AutoWidthInput from "./AutoWidthInput";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -29,14 +30,14 @@ function App() {
       <h1>Vite + React</h1>
       <div>
         <div className="input-group">
-          {inputs.map(({ inputKey, value }) => {
+          {inputs.map(({ inputKey }) => {
             return (
               <Fragment key={inputKey}>
                 <span>{inputKey}</span>
-                <input
-                  style={{ width: value.length * 8 + "px" }}
+                <AutoWidthInput
                   {...propsMap[inputKey]}
-                ></input>
+                  style={{ padding: "0 5px", minWidth: "1px" }}
+                />
               </Fragment>
             );
           })}
